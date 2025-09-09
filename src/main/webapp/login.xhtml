@@ -1,0 +1,36 @@
+<ui:composition template="/layout.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <div class = "form-card">
+            <h2 style="text-align: center;">התחברות</h2>
+
+            <h:form autocomplete="off">
+                <h:outputLabel value="שם משתמש:" for="username" />
+                <h:inputText id="username" value="#{userBean.username}" required="true"
+                             autocomplete="off" requiredMessage="יש להזין שם משתמש" />
+                <h:message for="username" style="color:red" />
+
+                <br/><br/>
+
+                <h:outputLabel value="סיסמה:" for="password" />
+                <h:inputSecret id="password" value="#{userBean.password}" required="true" 
+                               autocomplete="off" requiredMessage="יש להזין סיסמא" />
+                <h:message for="password" style="color:red" />
+
+                <br/><br/>
+
+                <div style="text-align: center;">
+                    <h:commandButton value="התחבר/י" action="#{userBean.login}"  styleClass="primary-button" />
+                </div>
+                
+                <h:link outcome="forgot_password" value="שכחת סיסמה?" />
+                
+            </h:form>
+
+        </div>
+    </ui:define>
+</ui:composition>

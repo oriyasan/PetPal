@@ -1,0 +1,57 @@
+<ui:composition template="/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{messageBean.loadSent}" />
+	</f:metadata>
+
+	<ui:define name="content">
+		<h2>דואר יוצא</h2>
+
+		<h:panelGroup rendered="#{not userBean.loggedIn}">
+			<h2>גישה נדחתה 🚫</h2>
+			<p>עליך להתחבר כדי להשתמש בדף זה.</p>
+			<h:link outcome="login" value="לחץ כאן כדי להתחבר"
+				styleClass="link-button" />
+		</h:panelGroup>
+
+		<h:panelGroup rendered="#{userBean.loggedIn}">
+			<h:messages globalOnly="true" />
+
+			<h:form id="sentForm" prependId="false">
+				<h:panelGroup id="sentList">
+					<ui:fragment rendered="#{empty messageBean.sent}">
+						<p>עדיין לא שלחת הודעות.</p>
+					</ui:fragment>
+
+					<div class="message-list" rendered="#{not empty messageBean.sent}">
+						<ui:repeat value="#{messageBean.sent}" var="m">
+							<div class="message-card">
+								<p>
+									<b>אל:</b> #{m.recipient.username} | <b>נושא:</b> #{m.subject}
+								</p>
+								<p>#{m.content}</p>
+								<p>
+									<i>נשלח: #{m.timestampFormatted}</i>
+								</p>
+
+								<h:commandButton value="מחק🗑️"
+									action="#{messageBean.deleteFromSent(m.id)}"
+									onclick="return confirm('למחוק את ההודעה מהדואר היוצא?');"
+									styleClass="primary-button">
+									<f:ajax execute="@this" render="sentList @messages" />
+								</h:commandButton>
+							</div>
+						</ui:repeat>
+					</div>
+				</h:panelGroup>
+
+				<h:button outcome="inbox" value="חזרה לדואר נכנס ↩️"
+					styleClass="primary-button" />
+			</h:form>
+		</h:panelGroup>
+	</ui:define>
+</ui:composition>

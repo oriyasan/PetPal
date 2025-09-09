@@ -1,0 +1,60 @@
+<ui:composition template="/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+	<ui:define name="content">
+		<div class="form-card">
+			<h2 style="text-align: center;">הרשמה</h2>
+
+			<h:form autocomplete="off">
+				<!-- Username -->
+				<h:outputLabel value="שם משתמש:" for="username" />
+				<h:inputText id="username" value="#{userBean.username}"
+					required="true" autocomplete="off"
+					requiredMessage="יש להזין שם משתמש" />
+				<h:message for="username" style="color:red" />
+
+				<br />
+				<br />
+
+				<!-- Password -->
+				<h:outputLabel value="סיסמה:" for="password" />
+				<h:inputSecret id="newPass" value="#{userBean.password}"
+					required="true" requiredMessage="יש להזין סיסמה" redisplay="false"
+					validatorMessage="סיסמה חייבת להכיל לפחות 7 תווים, כולל אות גדולה, אות קטנה, מספר ותו מיוחד"
+					styleClass="input-field">
+					<f:validateLength minimum="7" />
+					<f:validateRegex
+						pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{7,}$" />
+				</h:inputSecret>
+				<h:message for="newPass" style="color:red" />
+
+
+				<h:message for="password" style="color:red" />
+
+
+				<br />
+				<br />
+
+				<!-- Email -->
+				<h:outputLabel value="אימייל:" for="email" />
+				<h:inputText id="email" value="#{userBean.email}" required="true"
+					autocomplete="off" requiredMessage="יש להזין אימייל תקין" />
+				<h:message for="email" style="color:red" />
+
+				<br />
+				<br />
+
+				<div style="text-align: center;">
+					<h:commandButton value="הירשם/י" action="#{userBean.register}"
+						styleClass="primary-button" />
+				</div>
+
+				<h:messages globalOnly="true" style="color:red; margin-top: 10px;" />
+
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>

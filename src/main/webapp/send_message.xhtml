@@ -1,0 +1,42 @@
+<ui:composition template="/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+	<ui:define name="content">
+		<h2>שליחת פנייה לבעלים</h2>
+
+		<h:panelGroup rendered="#{not userBean.loggedIn}">
+			<h2>גישה נדחתה 🚫</h2>
+			<p>עליך להתחבר כדי להשתמש בדף זה.</p>
+			<h:link outcome="login" value="לחץ כאן כדי להתחבר"
+				styleClass="link-button" />
+		</h:panelGroup>
+
+		<h:panelGroup rendered="#{userBean.loggedIn}">
+			<f:metadata>
+				<f:viewParam name="animalId" value="#{messageBean.animalId}" />
+				<f:event type="preRenderView"
+					listener="#{messageBean.loadSelectedAnimal}" />
+			</f:metadata>
+
+			<h:form>
+				<h:outputLabel value="נושא:" />
+				<h:inputText value="#{messageBean.newMessage.subject}"
+					required="true" />
+
+				<br />
+				<br />
+				<h:outputLabel value="תוכן ההודעה:" />
+				<h:inputTextarea value="#{messageBean.newMessage.content}" rows="5"
+					required="true" />
+
+				<br />
+				<br />
+				<h:commandButton value="שלח 📨"
+					action="#{messageBean.sendMessage()}" styleClass="primary-button" />
+			</h:form>
+		</h:panelGroup>
+	</ui:define>
+</ui:composition>

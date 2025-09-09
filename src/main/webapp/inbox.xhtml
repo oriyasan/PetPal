@@ -1,0 +1,107 @@
+<ui:composition template="/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+	<!-- Loads the inbox on every page entry -->
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{messageBean.loadInbox}" />
+	</f:metadata>
+
+	<ui:define name="content">
+	
+		<h2>תיבת הדואר הנכנס</h2>
+
+
+		<h:panelGroup rendered="#{not userBean.loggedIn}">
+			<h2>גישה נדחתה 🚫</h2>
+			<p>עליך להתחבר כדי להשתמש בדף זה.</p>
+			<h:link outcome="login" value="לחץ כאן כדי להתחבר"
+				styleClass="link-button" />
+		</h:panelGroup>
+
+		<h:panelGroup rendered="#{userBean.loggedIn}">
+
+			<!-- Navigate to Outbox -->
+			<h:button outcome="sent" value="דואר יוצא 📤"
+				styleClass="primary-button" />
+
+			<!-- System messages -->
+			<h:messages globalOnly="true" />
+
+			<h:panelGroup id="inboxList">
+				<!-- No messages -->
+				<ui:fragment rendered="#{empty messageBean.inbox}">
+					<p>אין הודעות בתיבה.</p>
+				</ui:fragment>
+
+				<!-- There are messages -->
+				<ui:fragment rendered="#{not empty messageBean.inbox}">
+					<div class="message-list">
+						<ui:repeat value="#{messageBean.inbox}" var="msg">
+
+							<div class="message-card">
+								<p>
+									<b>מאת:</b> #{msg.sender.username}
+								</p>
+								<p>
+									<b>נושא:</b> #{msg.subject}
+								</p>
+								<p>
+									<b>תוכן:</b> #{msg.content}
+								</p>
+								<p>
+									<b>בנוגע לחיה:</b> #{empty msg.animal ? '—' : msg.animal.name}
+								</p>
+								<p>
+									<b>נשלח ב:</b> #{msg.timestampFormatted}
+								</p>
+
+								<!-- Answer form -->
+								<h:form styleClass="inline-form">
+									<h:commandButton value="השב ↩️"
+										action="#{messageBean.startReply(msg.id)}"
+										styleClass="primary-button">
+										<f:ajax execute="@this" render="@form" />
+									</h:commandButton>
+
+									<h:panelGroup id="reply" styleClass="reply-box"
+										rendered="#{messageBean.replyingToId eq msg.id}">
+										<br />
+										<h:inputText value="#{messageBean.newMessage.subject}"
+											id="replySubject" pt:placeholder="נושא" />
+										<br />
+										<br />
+										<h:inputTextarea value="#{messageBean.newMessage.content}"
+											id="replyContent" rows="4" pt:placeholder="תוכן ההודעה" />
+										<br />
+										<br />
+										<h:commandButton value="שלח"
+											action="#{messageBean.sendMessage}"
+											styleClass="primary-button">
+											<!-- רענון התשובה המקומית והרשימה הכללית -->
+											<f:ajax execute="@form" render="@form :inboxList @messages" />
+										</h:commandButton>
+									</h:panelGroup>
+								</h:form>
+
+								<!-- Delete -->
+								<h:form styleClass="inline-form">
+									<h:commandButton value="מחק 🗑️"
+										action="#{messageBean.deleteFromInbox(msg.id)}"
+										onclick="return confirm('למחוק את ההודעה?');"
+										styleClass="primary-button">
+										<f:ajax render=":inboxList @messages" />
+									</h:commandButton>
+								</h:form>
+
+							</div>
+						</ui:repeat>
+					</div>
+				</ui:fragment>
+			</h:panelGroup>
+		</h:panelGroup>
+	</ui:define>
+</ui:composition>

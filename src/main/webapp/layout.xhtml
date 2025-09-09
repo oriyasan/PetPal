@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<!--
+Purpose: Global layout used by all pages. Contains <head>, logo header,
+top menu, global messages, and a content slot.
+-->
+
+<h:head>
+	<meta charset="UTF-8" />
+	<f:view encoding="UTF-8" contentType="text/html" />
+	<title>PetPal - מערכת אימוץ</title>
+	<h:outputStylesheet library="css" name="style.css" />
+
+
+	<!-- Tiny helper to toggle extra details in animal cards -->
+	<script>
+		function toggleDetails(button) {
+			const card = button.closest('.animal-card');
+			const more = card.querySelector('.more-description');
+			if (!more)
+				return;
+			more.style.display = (more.style.display === 'block') ? 'none'
+					: 'block';
+			button.textContent = more.style.display === 'block' ? 'הסתר פרטים'
+					: 'עוד פרטים';
+		}
+	</script>
+</h:head>
+
+<h:body>
+	<!-- Optional: global data seeding on every view render -->
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{dataInitializer.seed}" />
+	</f:metadata>
+
+	<!-- ================= Header with Logo ================= -->
+
+
+	<!-- Header with centered logo and subtle background paw pattern -->
+	<div class="header">
+		<h:graphicImage library="images" name="logo.png" alt="PetPal Logo" />
+
+	</div>
+
+	<!-- Fixed top menu shown on every page. Buttons styled by .primary-button -->
+	<div class="top-menu">
+
+		<!-- When NOT logged in -->
+		<h:panelGroup rendered="#{not userBean.loggedIn}">
+			<h:button outcome="login" value=" התחבר/י 🔑"
+				styleClass="primary-button" />
+        |
+        <h:button outcome="register" value="הרשמה 📝"
+				styleClass="primary-button" />
+        |
+    </h:panelGroup>
+
+		<!-- When logged in -->
+		<h:panelGroup rendered="#{userBean.loggedIn}">
+			<span>שלום , #{userBean.username} 👋</span>
+        |
+        <h:button outcome="profile" value="הפרופיל שלי 👤"
+				styleClass="primary-button" />
+        |
+        <h:button outcome="add_animal" value="הוספת חיה ➕"
+				styleClass="primary-button" />
+        |
+
+			<h:form styleClass="inline-form">
+				<h:commandButton value="התנתקות 🚪" action="#{userBean.logout}"
+					styleClass="primary-button" />
+                             |
+        </h:form>
+		</h:panelGroup>
+
+		<!-- Always visible -->
+		<h:button outcome="animals" value="צפייה בחיות 🐾"
+			styleClass="primary-button" />
+		|
+		<h:button outcome="index" value="עמוד ראשי 🏠"
+			styleClass="primary-button" />
+
+		<h:outputLink value="#{request.contextPath}/export/animals.xml"
+			styleClass="link-button">
+  ייצוא רשימת חיות ל-XML
+</h:outputLink>
+	</div>
+
+
+	<div class="content">
+		<ui:insert name="content" />
+	</div>
+</h:body>
+</html>

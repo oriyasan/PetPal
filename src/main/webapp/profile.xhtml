@@ -1,0 +1,177 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" template="/layout.xhtml">
+
+
+	<ui:define name="content">
+
+		<!-- If not connected – error message -->
+		<h:panelGroup rendered="#{not userBean.loggedIn}">
+			<h2>הפרופיל</h2>
+			<p style="color: red;">את/ה לא מחובר/ת. לכן אין פרטים להצגה.</p>
+			<h:link outcome="login" value="לחץ כאן כדי להתחבר"
+				styleClass="link-button" />
+		</h:panelGroup>
+
+		<!-- If logged in – view profile details -->
+		<h:panelGroup rendered="#{userBean.loggedIn}">
+
+			<f:event type="preRenderView"
+				listener="#{favoriteBean.loadFavorites}" />
+			<f:event type="preRenderView" listener="#{animalBean.loadMyAnimals}" />
+
+			<h2>שלום, #{userBean.loggedInUser.username}! 👋</h2>
+			<p>כתובת אימייל אישית: #{userBean.loggedInUser.email} 📨</p>
+
+			<h:button value="תיבת דואר 📥" outcome="inbox.xhtml"
+				styleClass="primary-button" />
+
+			<!-- ================= favorites ================= -->
+			<h3 class="section-title">החיות שסימנתי כמועדפות: ❤️</h3>
+
+			<!-- Empty state -->
+			<h:panelGroup rendered="#{empty favoriteBean.favorites}">
+				<div class="empty-state">אין עדיין חיות במועדפים. אפשר להתחיל
+					מדף “צפייה בחיות”.</div>
+			</h:panelGroup>
+
+			<!-- Favorites Grid -->
+			<h:panelGroup id="favGrid"
+				rendered="#{not empty favoriteBean.favorites}">
+				<div class="card-grid">
+					<ui:repeat value="#{favoriteBean.favorites}" var="fav">
+						<div class="animal-card">
+
+							<!-- image -->
+							<h:graphicImage rendered="#{not empty fav.animal.imageBase64}"
+								value="data:image/jpeg;base64,#{fav.animal.imageBase64}"
+								alt="תמונה של #{fav.animal.name}" styleClass="animal-image" />
+							<h:graphicImage rendered="#{empty fav.animal.imageBase64}"
+								library="images" name="default.jpg" alt="תמונה חסרה"
+								styleClass="animal-image" />
+
+							<!-- Details -->
+							<h3>#{fav.animal.name}</h3>
+							<p>
+								<b>קטגוריה:</b> #{fav.animal.category.name}
+							</p>
+							<p>
+								<b>מין:</b> #{fav.animal.gender}
+							</p>
+							<p>
+								<b>גיל:</b> #{fav.animal.age}
+							</p>
+							<p>
+								<b>תיאור קצר:</b> #{fav.animal.shortDescription}
+							</p>
+
+							<button type="button" class="secondary-button"
+								onclick="toggleDetails(this)">עוד פרטים</button>
+							<div class="more-description">
+								<p>
+									<b>תיאור מלא:</b> #{fav.animal.fullDescription}
+								</p>
+							</div>
+
+							<!-- Actions -->
+							<h:form styleClass="inline-form">
+								<h:commandButton value="הסר ממועדפים"
+									action="#{favoriteBean.removeFromFavorites(fav.animal.id)}"
+									styleClass="primary-button">
+									<f:ajax execute="@this" render=":favGrid :globalMsgs" />
+								</h:commandButton>
+							</h:form>
+
+							<h:panelGroup rendered="#{userBean.loggedIn}">
+								<h:panelGroup
+									rendered="#{fav.animal.owner.id ne userBean.loggedInUser.id}">
+									<h:form styleClass="inline-form">
+										<h:commandLink value="שלח פנייה לבעלים"
+											action="#{messageBean.redirectToSendMessage(fav.animal.id)}"
+											styleClass="link-button" />
+									</h:form>
+								</h:panelGroup>
+								<h:panelGroup
+									rendered="#{fav.animal.owner.id eq userBean.loggedInUser.id}">
+									<p>
+										<i>זו חיה שבבעלותך — אין צורך לשלוח פנייה.</i>
+									</p>
+								</h:panelGroup>
+							</h:panelGroup>
+
+						</div>
+					</ui:repeat>
+				</div>
+			</h:panelGroup>
+
+			<br />
+
+			<!-- ================= my animals ================= -->
+			<h3 class="section-title">החיות שפרסמתי לאימוץ 🐾</h3>
+
+			<!-- Empty state -->
+			<h:panelGroup rendered="#{empty animalBean.myAnimals}">
+				<div class="empty-state">עדיין לא הוספת חיות. אפשר להתחיל מדף
+					“הוספת חיה”.</div>
+			</h:panelGroup>
+
+			<!-- My Animal Grid -->
+			<h:panelGroup id="myAnimalsGrid"
+				rendered="#{not empty animalBean.myAnimals}">
+				<div class="card-grid">
+					<ui:repeat value="#{animalBean.myAnimals}" var="a">
+						<div class="animal-card">
+							<h:graphicImage rendered="#{not empty a.imageBase64}"
+								value="data:image/jpeg;base64,#{a.imageBase64}"
+								alt="תמונה של #{a.name}" styleClass="animal-image" />
+							<h:graphicImage rendered="#{empty a.imageBase64}"
+								library="images" name="default.jpg" alt="תמונה חסרה"
+								styleClass="animal-image" />
+
+							<h3>#{a.name}</h3>
+							<p>
+								<b>קטגוריה:</b> #{a.category.name}
+							</p>
+							<p>
+								<b>מין:</b> #{a.gender}
+							</p>
+							<p>
+								<b>גיל:</b> #{a.age}
+							</p>
+							<p>
+								<b>תיאור קצר:</b> #{a.shortDescription}
+							</p>
+
+							<button type="button" class="secondary-button"
+								onclick="toggleDetails(this)">עוד פרטים</button>
+							<div class="more-description">
+								<p>
+									<b>תיאור מלא:</b> #{a.fullDescription}
+								</p>
+							</div>
+
+							<!-- Delete (for owners only) – optional -->
+							<h:panelGroup
+								rendered="#{a.owner.id eq userBean.loggedInUser.id}">
+								<h:form styleClass="inline-form">
+									<h:commandButton value="מחיקת חיה 🗑️"
+										action="#{animalFormBean.deleteAnimal(a.id)}"
+										styleClass="primary-button" />
+								</h:form>
+							</h:panelGroup>
+						</div>
+					</ui:repeat>
+				</div>
+			</h:panelGroup>
+
+			<br />
+
+			<h:button outcome="change_password" value="הגדר/י סיסמה חדשה"
+				styleClass="primary-button" />
+
+		</h:panelGroup>
+
+	</ui:define>
+
+</ui:composition>

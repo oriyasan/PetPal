@@ -1,0 +1,142 @@
+<ui:composition template="/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+	<ui:define name="content">
+	
+		<h2>חיות המוצעות לאימוץ</h2>
+
+		<!-- Filters + Sort -->
+		<h:form id="filters">
+			<h:panelGrid columns="6">
+				<!-- category -->
+				<h:outputLabel for="cat" value="קטגוריה:" />
+				<h:selectOneMenu id="cat" value="#{animalBean.categoryId}">
+					<f:selectItem itemLabel="הכול" itemValue="#{null}" />
+					<f:selectItems value="#{animalBean.categories}" var="c"
+						itemValue="#{c.id}" itemLabel="#{c.name}" />
+				</h:selectOneMenu>
+
+				<!-- gender -->
+				<h:outputLabel for="gender" value="מין:" />
+				<h:selectOneMenu id="gender" value="#{animalBean.gender}">
+					<f:selectItem itemLabel="הכול" itemValue="" />
+					<f:selectItem itemLabel="זכר" itemValue="זכר" />
+					<f:selectItem itemLabel="נקבה" itemValue="נקבה" />
+				</h:selectOneMenu>
+
+				<!-- age -->
+				<h:outputLabel for="minAge" value="גיל מ־:" />
+				<h:inputText id="minAge" value="#{animalBean.minAge}"
+					styleClass="small-input" />
+
+				<h:outputLabel for="maxAge" value="עד:" />
+				<h:inputText id="maxAge" value="#{animalBean.maxAge}"
+					styleClass="small-input" />
+
+				<!-- sort -->
+				<h:outputLabel for="sortBy" value="מיין לפי:" />
+				<h:selectOneMenu id="sortBy" value="#{animalBean.sortBy}">
+					<f:selectItem itemLabel="תאריך הוספה" itemValue="timestamp" />
+					<f:selectItem itemLabel="שם" itemValue="name" />
+					<f:selectItem itemLabel="גיל" itemValue="age" />
+					<f:selectItem itemLabel="קטגוריה" itemValue="category" />
+				</h:selectOneMenu>
+
+				<h:outputLabel for="sortDir" value="כיוון:" />
+				<h:selectOneMenu id="sortDir" value="#{animalBean.sortDir}">
+					<f:selectItem itemLabel="עולה" itemValue="ASC" />
+					<f:selectItem itemLabel="יורד" itemValue="DESC" />
+				</h:selectOneMenu>
+
+				<!-- search -->
+				<h:commandButton value="חפש" action="#{animalBean.search}"
+					styleClass="primary-button">
+					<f:ajax execute="@form" render="results" />
+				</h:commandButton>
+			</h:panelGrid>
+		</h:form>
+
+		<!-- results -->
+		<h:panelGroup id="results">
+			<div class="card-grid">
+				<ui:repeat value="#{animalBean.animals}" var="animal">
+					<div class="animal-card">
+						<h:graphicImage rendered="#{not empty animal.imageBase64}"
+							value="data:image/jpeg;base64,#{animal.imageBase64}"
+							alt="תמונה של #{animal.name}" styleClass="animal-image" />
+						<h:graphicImage rendered="#{empty animal.imageBase64}"
+							value="#{request.contextPath}/images/default.jpg"
+							alt="תמונה חסרה" styleClass="animal-image" />
+
+						<h3>#{animal.name}</h3>
+						<p>
+							<b>קטגוריה:</b> #{animal.category.name}
+						</p>
+						<p>
+							<b>מין:</b> #{animal.gender}
+						</p>
+						<p>
+							<b>גיל:</b> #{animal.age}
+						</p>
+						<p>
+							<b>תיאור קצר:</b> #{animal.shortDescription}
+						</p>
+
+						<button type="button" class="secondary-button"
+							onclick="toggleDetails(this)">עוד פרטים</button>
+						<div class="more-description">
+							<p>
+								<b>תיאור מלא:</b> #{animal.fullDescription}
+							</p>
+						</div>
+
+						<h:panelGroup rendered="#{userBean.loggedIn}">
+							<!-- add to favorites -->
+							<h:form styleClass="inline-form">
+								<h:commandButton value="שמור למועדפים ❤️"
+									action="#{favoriteBean.addToFavorites(animal.id)}"
+									styleClass="primary-button" />
+							</h:form>
+
+							<!-- Send a message to the owner  -->
+							<h:panelGroup
+								rendered="#{animal.owner.id ne userBean.loggedInUser.id}">
+								<h:form styleClass="inline-form">
+									<h:commandLink value="שלח פנייה לבעלים 📨"
+										action="#{messageBean.redirectToSendMessage(animal.id)}"
+										styleClass="link-button" />
+								</h:form>
+							</h:panelGroup>
+
+							<!-- Message if this is the user's animal -->
+							<h:panelGroup
+								rendered="#{animal.owner.id eq userBean.loggedInUser.id}">
+								<h:form styleClass="inline-form">
+									<h:commandButton value="מחק חיה 🗑️"
+										action="#{animalBean.deleteAnimal(animal.id)}"
+										styleClass="secondary-button"
+										onclick="return confirm('למחוק את #{animal.name}? פעולה זו אינה ניתנת לשחזור.');">
+										<f:ajax execute="@this" render="results" />
+									</h:commandButton>
+								</h:form>
+								<p>
+									<i>זו חיה שבבעלותך — אין צורך לשלוח פנייה.</i>
+								</p>
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<h:panelGroup rendered="#{not userBean.loggedIn}">
+							<p>
+								<i>התחבר/י כדי לשלוח פנייה לבעלים או לשמור למועדפים</i>
+							</p>
+						</h:panelGroup>
+					</div>
+				</ui:repeat>
+			</div>
+		</h:panelGroup>
+
+	</ui:define>
+</ui:composition>

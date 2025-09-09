@@ -1,0 +1,12 @@
+<ui:composition template="/layout.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="content">
+        <h2 style="color: red;">ההתחברות נכשלה</h2>
+        <p>אנא נסה/י שוב. ודאי שהזנת שם משתמש וסיסמה נכונים.</p>
+
+        <h:link value="חזרה לדף ההתחברות" outcome="login.xhtml" />
+    </ui:define>
+</ui:composition>

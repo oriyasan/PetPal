@@ -1,0 +1,56 @@
+<ui:composition template="/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+	<ui:define name="content">
+		<h2>
+			ברוך/ה הבאה ל־<b>PetPal</b>
+		</h2>
+
+		<!-- The meaning of the website -->
+		<h:panelGroup layout="block" styleClass="intro">
+			<p>
+				<b>PetPal</b> נולד מאהבת בעלי-חיים ורצון לחבר ביניהם לבין בתים חמים.
+				כאן אפשר לגלות חיות שממתינות לאימוץ, לסנן לפי קטגוריה, גיל ומין,
+				לשמור מועדפים, וליצור קשר ישירות עם המפרסמים – הכול במקום אחד ונעים
+				לשימוש. 🐾
+			</p>
+
+			<ul class="intro-list">
+				<li><b>חיפוש חכם</b> של חיות לאימוץ לפי פילטרים.</li>
+				<li><b>מועדפים</b> לשמירה וחזרה מהירה.</li>
+				<li><b>הוספת חיה</b> הזקוקה לבית אוהב.</li>
+				<li><b>התכתבות נוחה</b> בין מאמצים למפרסמים.</li>
+			</ul>
+
+			<p>אנחנו מאמינים שכל חיה ראויה להזדמנות – וכל לב יכול להתרחב עוד
+				קצת. 💛</p>
+		</h:panelGroup>
+		<div class="page-actions">
+			<!-- If the user is not logged in -->
+			<h:panelGroup rendered="#{not userBean.loggedIn}">
+				<h:link outcome="login" value="מעבר לדף ההתחברות"
+					styleClass="link-button" />
+				<h:link outcome="register" value="אין לך חשבון? הירשם/י כאן"
+					styleClass="link-button" />
+			</h:panelGroup>
+
+			<!-- If the user is logged in -->
+			<h:panelGroup rendered="#{userBean.loggedIn}">
+				<h:link outcome="profile"
+					value="הפרופיל האישי שלי-  תיבת דואר, שינוי סיסמא , רשימת מעודפים , רשימת חיות שהוספתי ופרטים אישיים"
+					styleClass="link-button" />
+				<h:link outcome="add_animal" value="הוספת חיה לאימוץ - טופס הוספה"
+					styleClass="link-button" />
+			</h:panelGroup>
+
+			<!-- Link to all animals -->
+			<h:link outcome="animals"
+				value="  צפייה בחיות המוצעות לאימוץ - רשימת חיות עם אופציית סינון"
+				styleClass="link-button" />
+		</div>
+	</ui:define>
+
+</ui:composition>
