@@ -61,7 +61,8 @@ For quick login, demo users are provided:
 ---
 
 ## Additional Documents
-[📘 User Guide](UserGuide.pdf)
+[📘 User Guide](UserGuide.pdf) - in Hebrew
+
 
 
  
