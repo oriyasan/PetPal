@@ -60,4 +60,7 @@ For quick login, demo users are provided:
 
 ---
 
+## Additional Documents
+- [User Guide](docs/UserGuide.pdf) 
+
  
