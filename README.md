@@ -45,6 +45,8 @@ The system was built out of love for animals and provides the following features
 
 ## Demo Users
 For quick login, demo users are provided:
+Demo images were taken from Pexels.
+
 
 | User        | Password      |
 |-------------|---------------|
