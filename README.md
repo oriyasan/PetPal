@@ -1,4 +1,4 @@
-![PetPal Logo](src/main/webapp/resources/images/logo.png)  
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/37cebd2c-a936-4374-b0ca-9575f6192221" />![PetPal Logo](src/main/webapp/resources/images/logo.png)  
 
 **PetPal** is a web-based system for managing pets available for adoption.  
 The system was built out of love for animals and provides the following features:
@@ -45,6 +45,8 @@ The system was built out of love for animals and provides the following features
 
 ## Demo Users
 For quick login, demo users are provided:
+The demo images were taken from Pexels.
+
 
 | User        | Password      |
 |-------------|---------------|
