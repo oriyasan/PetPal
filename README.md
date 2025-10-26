@@ -58,6 +58,8 @@ For quick login, demo users are provided:
 | mon         | Monmon12#     |
 | david       | Dandan1!      |
 
+Demo images were taken from Pexels.
+
 ---
 
 ## Additional Documents
